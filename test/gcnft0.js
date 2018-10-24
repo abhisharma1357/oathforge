@@ -9,8 +9,12 @@ const BluebirdStub = require('bluebird-stub')
 const testBalances = require('./testBalances')
 const testOwner = require('./testOwner')
 const gcnft0Stub = require('./gcnft0Stub')
+const amorphAscii = require('amorph-ascii')
 
 describe('gcnft0', () => {
+
+  const name = Amorph.from(amorphAscii, 'GuildCrypt NFT 0')
+  const symbol = Amorph.from(amorphAscii, 'GCNFT0')
 
   const zero = Amorph.from(amorphNumber.unsigned, 0)
   const one = Amorph.from(amorphNumber.unsigned, 1)
@@ -23,7 +27,7 @@ describe('gcnft0', () => {
 
   describe('deploy', () => {
     it('should deploy', () => {
-      return ultralightbeam.solDeploy(gcnft0Info.code, gcnft0Info.abi, [], {
+      return ultralightbeam.solDeploy(gcnft0Info.code, gcnft0Info.abi, [name, symbol], {
         from: accounts[0]
       }).then((_gcnft0) => {
         gcnft0 = _gcnft0
@@ -32,6 +36,12 @@ describe('gcnft0', () => {
     })
     it('should have correct code', () => {
       return ultralightbeam.eth.getCode(gcnft0.address).should.eventually.amorphEqual(gcnft0Info.runcode)
+    })
+    it('should have correct name', () => {
+      return gcnft0.fetch('name()', []).should.eventually.amorphEqual(name)
+    })
+    it('should have correct symbol', () => {
+      return gcnft0.fetch('symbol()', []).should.eventually.amorphEqual(symbol)
     })
     testOwner(tokenAId, null)
     testBalances(tokenAId, [zero, zero, zero, zero])

@@ -1,13 +1,16 @@
 pragma solidity ^0.4.24;
 
 import "ERC721.sol";
+import "ERC721Metadata.sol";
 
-contract GCNFT0 is ERC721 {
+contract GCNFT0 is ERC721, ERC721Metadata {
 
   mapping(uint256 => address) public admin;
   mapping(uint256 => uint256) public sunsetInitiatedAt;
   mapping(uint256 => uint256) public redemptionCodeHashSubmittedAt;
   mapping(uint256 => bytes32) public redemptionCodeHash;
+
+  constructor(string _name, string _symbol) ERC721Metadata(_name, _symbol) public {}
 
   function mint(uint256 _tokenId, address _to) public {
     admin[_tokenId] = msg.sender;

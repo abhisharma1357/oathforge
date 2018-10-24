@@ -21,6 +21,7 @@
     "ultralightbeam": "^5.1.9"
   },
   "dependencies": {
+    "amorph-ascii": "^1.0.0",
     "bluebird-stub": "0.0.0",
     "clear": "^0.1.0",
     "openzeppelin-solidity": "^2.0.0",
