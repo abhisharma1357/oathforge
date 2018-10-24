@@ -17,9 +17,10 @@ contract GCNFT0 is ERC721, ERC721Metadata {
 
   uint256 public totalSupply;
 
-  function mint(uint256 _tokenId, address _to) public {
+  function mintWithTokenURI(address _to, uint256 _tokenId, string _tokenURI) public {
     admin[_tokenId] = msg.sender;
     _mint(_to, _tokenId);
+    _setTokenURI(_tokenId, _tokenURI);
     totalSupply = totalSupply.add(1);
   }
 
@@ -29,7 +30,7 @@ contract GCNFT0 is ERC721, ERC721Metadata {
     sunsetInitiatedAt[_tokenId] = now;
   }
 
-  function submitRedemptionCodeHash(uint256 _tokenId, bytes32 _redemptionCodeHash) public {
+  function submitRedemptionCodeHash(bytes32 _redemptionCodeHash, uint256 _tokenId) public {
     _burn(msg.sender, _tokenId);
     redemptionCodeHashSubmittedAt[_tokenId] = now;
     redemptionCodeHash[_tokenId] = _redemptionCodeHash;

@@ -12,6 +12,7 @@ const amorphHex = require('amorph-hex')
 const prompt = require('prompt-promise')
 const SolWrapper = require('ultralightbeam/lib/SolWrapper')
 const getRandomAmorph = require('ultralightbeam/lib/getRandomAmorph')
+const amorphAscii = require('amorph-ascii')
 
 clear()
 
@@ -24,7 +25,11 @@ commander
 
     console.log('Deploying gcNFT0...'.cyan)
 
-    return ulb.solDeploy(gcnft0Info.code, gcnft0Info.abi, [], {
+    const timestamp = (new Date).getTime()
+    const name = Amorph.from(amorphAscii, `GuildCrypt NFT0 - Test - ${timestamp}`)
+    const symbol = Amorph.from(amorphAscii, `GCNFT0-TEST-${timestamp}`)
+
+    return ulb.solDeploy(gcnft0Info.code, gcnft0Info.abi, [name, symbol], {
       from: account
     }).then((gcnft0) => {
       console.log(`Deployed gcNFT0 to ${gcnft0.address.to(amorphHex.unprefixed)}`.green)

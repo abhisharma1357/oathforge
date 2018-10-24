@@ -23,6 +23,7 @@ describe('gcnft0', () => {
   const redemptionCodeHash = getRandomAmorph(32)
 
   const tokenAId = getRandomAmorph(32)
+  const tokenAUri = Amorph.from(amorphAscii, 'https://heloworld.com')
 
   let gcnft0
 
@@ -51,9 +52,12 @@ describe('gcnft0', () => {
   /**************************************/
   describe('account 0 should mint tokenA to account 1', () => {
     it('should broadcast', () => {
-      return gcnft0.broadcast('mint(uint256,address)', [tokenAId, accounts[1].address], {
+      return gcnft0.broadcast('mintWithTokenURI(address,uint256,string)', [accounts[1].address, tokenAId, tokenAUri], {
         from: accounts[0]
       }).getConfirmation()
+    })
+    it('should have correct tokenUri', () => {
+      return gcnft0.fetch('tokenURI(uint256)', [tokenAId]).should.eventually.amorphEqual(tokenAUri)
     })
     testOwner(tokenAId, 1)
     testBalances([zero, one, zero, zero])
@@ -128,7 +132,7 @@ describe('gcnft0', () => {
   })
   describe('account 0 should NOT BE ABLE TO submit redemption code hash', () => {
     it('should REJECT broadcast', () => {
-      return gcnft0.broadcast('submitRedemptionCodeHash(uint256,bytes32)', [tokenAId, redemptionCodeHash], {
+      return gcnft0.broadcast('submitRedemptionCodeHash(bytes32,uint256)', [redemptionCodeHash, tokenAId], {
         from: accounts[0]
       }).getConfirmation().should.be.rejectedWith(FailedTransactionError)
     })
@@ -144,7 +148,7 @@ describe('gcnft0', () => {
   })
   describe('account 3 should submit redemption code hash', () => {
     it('should broadcast', () => {
-      return gcnft0.broadcast('submitRedemptionCodeHash(uint256,bytes32)', [tokenAId, redemptionCodeHash], {
+      return gcnft0.broadcast('submitRedemptionCodeHash(bytes32,uint256)', [redemptionCodeHash, tokenAId], {
         from: accounts[3]
       }).getConfirmation()
     })
