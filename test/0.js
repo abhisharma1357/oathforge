@@ -2,5 +2,6 @@ require('./chai')
 require('colors')
 
 process.on('uncaughtException', (error) => {
-  //* mute *//
+  console.log(error.message.red)
+  throw error
 })

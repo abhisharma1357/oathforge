@@ -2,7 +2,7 @@ const accounts = require('./accounts')
 const amorphNumber = require('amorph-number')
 const gcnft0Stub = require('./gcnft0Stub')
 
-module.exports = function testBalances(gcnft0Promise, balances) {
+module.exports = function testBalances(balances) {
   describe('balances', () => {
     balances.forEach((balance, index) => {
       it(`account ${index} should have balance of ${balance.to(amorphNumber.unsigned)}`, () => {

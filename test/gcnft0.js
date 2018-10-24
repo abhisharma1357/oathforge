@@ -8,6 +8,7 @@ const getRandomAmorph = require('ultralightbeam/lib/getRandomAmorph')
 const BluebirdStub = require('bluebird-stub')
 const testBalances = require('./testBalances')
 const testOwner = require('./testOwner')
+const testTotalSupply = require('./testTotalSupply')
 const gcnft0Stub = require('./gcnft0Stub')
 const amorphAscii = require('amorph-ascii')
 
@@ -44,7 +45,8 @@ describe('gcnft0', () => {
       return gcnft0.fetch('symbol()', []).should.eventually.amorphEqual(symbol)
     })
     testOwner(tokenAId, null)
-    testBalances(tokenAId, [zero, zero, zero, zero])
+    testBalances([zero, zero, zero, zero])
+    testTotalSupply(zero)
   })
   /**************************************/
   describe('account 0 should mint tokenA to account 1', () => {
@@ -54,7 +56,8 @@ describe('gcnft0', () => {
       }).getConfirmation()
     })
     testOwner(tokenAId, 1)
-    testBalances(tokenAId, [zero, one, zero, zero])
+    testBalances([zero, one, zero, zero])
+    testTotalSupply(one)
   })
   describe('account 0 should NOT BE ABLE TO transfer tokenA from account 0 to account 2', () => {
     it('should REJECT broadcast', () => {
@@ -63,7 +66,8 @@ describe('gcnft0', () => {
       }).getConfirmation().should.be.rejectedWith(FailedTransactionError)
     })
     testOwner(tokenAId, 1)
-    testBalances(tokenAId, [zero, one, zero, zero])
+    testBalances([zero, one, zero, zero])
+    testTotalSupply(one)
   })
   describe('account 0 should NOT BE ABLE TO transfer tokenA from account 1 to account 2', () => {
     it('should REJECT broadcast', () => {
@@ -72,7 +76,7 @@ describe('gcnft0', () => {
       }).getConfirmation().should.be.rejectedWith(FailedTransactionError)
     })
     testOwner(tokenAId, 1)
-    testBalances(tokenAId, [zero, one, zero, zero])
+    testBalances([zero, one, zero, zero])
   })
   describe('account 1 should transfer tokenA from account 1 to account 2', () => {
     it('should broadcast', () => {
@@ -81,7 +85,7 @@ describe('gcnft0', () => {
       }).getConfirmation()
     })
     testOwner(tokenAId, 2)
-    testBalances(tokenAId, [zero, zero, one, zero])
+    testBalances([zero, zero, one, zero])
   })
   describe('account 2 should NOT BE ABLE TO sunset tokenA', () => {
     it('should REJECT broadcast', () => {
@@ -93,7 +97,7 @@ describe('gcnft0', () => {
       return gcnft0.fetch('sunsetInitiatedAt(uint256)', [tokenAId]).should.eventually.amorphEqual(zero)
     })
     testOwner(tokenAId, 2)
-    testBalances(tokenAId, [zero, zero, one, zero])
+    testBalances([zero, zero, one, zero])
   })
   describe('account 0 should sunset tokenA', () => {
     it('should broadcast', () => {
@@ -109,7 +113,8 @@ describe('gcnft0', () => {
       })
     })
     testOwner(tokenAId, 2)
-    testBalances(tokenAId, [zero, zero, one, zero])
+    testBalances([zero, zero, one, zero])
+    testTotalSupply(one)
   })
   describe('account 2 should transfer tokenA from account 2 to account 3', () => {
     it('should broadcast', () => {
@@ -118,7 +123,8 @@ describe('gcnft0', () => {
       }).getConfirmation()
     })
     testOwner(tokenAId, 3)
-    testBalances(tokenAId, [zero, zero, zero, one])
+    testBalances([zero, zero, zero, one])
+    testTotalSupply(one)
   })
   describe('account 0 should NOT BE ABLE TO submit redemption code hash', () => {
     it('should REJECT broadcast', () => {
@@ -133,7 +139,8 @@ describe('gcnft0', () => {
       return gcnft0.fetch('redemptionCodeHashSubmittedAt(uint256)', [tokenAId]).should.eventually.amorphEqual(zero)
     })
     testOwner(tokenAId, 3)
-    testBalances(tokenAId, [zero, zero, zero, one])
+    testBalances([zero, zero, zero, one])
+    testTotalSupply(one)
   })
   describe('account 3 should submit redemption code hash', () => {
     it('should broadcast', () => {
@@ -152,6 +159,7 @@ describe('gcnft0', () => {
       })
     })
     testOwner(tokenAId, null)
-    testBalances(tokenAId, [zero, zero, zero, zero])
+    testBalances([zero, zero, zero, zero])
+    testTotalSupply(zero)
   })
 })
