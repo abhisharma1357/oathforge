@@ -1,0 +1,32 @@
+{
+  "name": "gcnft0",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --bail --exit"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "amorph-hex": "^3.0.1",
+    "amorph-number": "^2.0.0",
+    "chai": "^4.2.0",
+    "chai-amorph": "^1.0.2",
+    "chai-as-promised": "^7.1.1",
+    "chai-web3-bindings": "^0.1.2",
+    "colors": "^1.3.2",
+    "ganache-cli": "^6.1.8",
+    "mocha": "^5.2.0",
+    "ultralightbeam": "^5.1.9"
+  },
+  "dependencies": {
+    "bluebird-stub": "0.0.0",
+    "clear": "^0.1.0",
+    "openzeppelin-solidity": "^2.0.0",
+    "prompt": "^1.0.0",
+    "prompt-promise": "^1.0.3",
+    "solc": "^0.4.25",
+    "web3-providers-http": "^1.0.0-beta.36"
+  }
+}
