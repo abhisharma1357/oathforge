@@ -174,9 +174,9 @@ describe('gcnft0', () => {
     testBalances([zero, one, one, zero])
     testTotalSupply(two)
   })
-  describe('account 2 should transfer tokenA from account 2 to account 3', () => {
+  describe('account 2 should safeTransferFrom tokenA from account 2 to account 3', () => {
     it('should broadcast', () => {
-      return gcnft0.broadcast('transferFrom(address,address,uint256)', [accounts[2].address, accounts[3].address, tokens.a.id], {
+      return gcnft0.broadcast('safeTransferFrom(address,address,uint256)', [accounts[2].address, accounts[3].address, tokens.a.id], {
         from: accounts[2]
       }).getConfirmation()
     })
@@ -300,6 +300,17 @@ describe('gcnft0', () => {
   describe('account 2 should NOT BE ABLE TO transfer tokenB from account 2 to account 3', () => {
     it('should broadcast', () => {
       return gcnft0.broadcast('transferFrom(address,address,uint256)', [accounts[2].address, accounts[3].address, tokens.b.id], {
+        from: accounts[2]
+      }).getConfirmation().should.be.rejectedWith(FailedTransactionError)
+    })
+    testOwnerOf(tokens.a.id, null)
+    testOwnerOf(tokens.b.id, 2)
+    testBalances([zero, zero, one, zero])
+    testTotalSupply(one)
+  })
+  describe('account 2 should NOT BE ABLE TO safeTransferFrom tokenB from account 2 to account 3', () => {
+    it('should broadcast', () => {
+      return gcnft0.broadcast('safeTransferFrom(address,address,uint256)', [accounts[2].address, accounts[3].address, tokens.b.id], {
         from: accounts[2]
       }).getConfirmation().should.be.rejectedWith(FailedTransactionError)
     })
