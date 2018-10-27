@@ -6,7 +6,7 @@ const FailedTransactionError = require('ultralightbeam/lib/errors/FailedTransact
 
 const nullAddress = new Amorph((new Uint8Array(20).fill(0)))
 
-module.exports = function testOwner(tokenId, accountIndex) {
+module.exports = function testOwnerOf(tokenId, accountIndex) {
   it(`owner should be account ${accountIndex === null ? 'NULL' : accountIndex}`, () => {
     return gcnft0Stub.promise.then((gcnft0) => {
       if (accountIndex === null) {

@@ -54,6 +54,7 @@ commander
     .version('0.0.0')
     .command('mint <network>').action(async (network) => {
 
+      const account = await getAccount(network)
       const ulb = await getUlb(network)
 
       const address = await recursivePrompt('contract address: ', (contractAddressHexUnprefixed) => {
@@ -66,8 +67,6 @@ commander
       await checkRuncode(network, address)
 
       const gcnft0Info = require('../')
-
-      const account = await getAccount(network)
       const gcnft0 = new SolWrapper(ulb, gcnft0Info.abi, address)
 
       const tokenId = getRandomAmorph(32)
@@ -78,8 +77,11 @@ commander
         return Amorph.from(amorphHex.unprefixed, receiverAddressHexUnprefixed)
       })
 
+      const tokenUriAscii = await prompt('token uri: ')
+      const tokenUri = Amorph.from(amorphAscii, tokenUriAscii)
+
       console.log(`Minting token ${tokenId.to(amorphHex.unprefixed)} to ${receiverAddress.to(amorphHex.unprefixed)}...`.cyan)
-      return gcnft0.broadcast('mint(uint256,address)', [tokenId, receiverAddress], {
+      return gcnft0.broadcast('mintWithTokenURI(address,uint256,string)', [receiverAddress, tokenId, tokenUri], {
         from: account
       }).getConfirmation().then(() => {
         console.log(`Confirming...`.cyan)
