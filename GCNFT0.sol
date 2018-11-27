@@ -2,10 +2,11 @@ pragma solidity ^0.4.24;
 
 import "ERC721.sol";
 import "ERC721Metadata.sol";
+import "ERC721Enumerable.sol";
 import "math/SafeMath.sol";
 import "ownership/Ownable.sol";
 
-contract GCNFT0 is ERC721, ERC721Metadata, Ownable {
+contract GCNFT0 is ERC721, ERC721Metadata, ERC721Enumerable, Ownable {
 
   using SafeMath for uint256;
 
@@ -25,11 +26,11 @@ contract GCNFT0 is ERC721, ERC721Metadata, Ownable {
     _;
   }
 
-  function mint(address _to, uint256 _tokenId, string _tokenURI, uint256 _sunsetLength) public onlyOwner {
-    tokenizer[_tokenId] = msg.sender;
-    sunsetLength[_tokenId] = _sunsetLength;
-    _mint(_to, _tokenId);
-    _setTokenURI(_tokenId, _tokenURI);
+  function mint(address _to, string _tokenURI, uint256 _sunsetLength) public onlyOwner {
+    tokenizer[totalSupply] = msg.sender;
+    sunsetLength[totalSupply] = _sunsetLength;
+    _mint(_to, totalSupply);
+    _setTokenURI(totalSupply, _tokenURI);
     totalSupply = totalSupply.add(1);
   }
 

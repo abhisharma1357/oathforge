@@ -25,13 +25,13 @@ describe('gcnft0', () => {
 
   const tokens = {
     a: {
-      id:  getRandomAmorph(32),
+      id: zero,
       uri: Amorph.from(amorphAscii, 'https://uris.com/a'),
       sunsetLength: Amorph.from(amorphNumber.unsigned, 7776000), //90 days
       redemptionCodeHash: getRandomAmorph(32)
     },
     b: {
-      id:  getRandomAmorph(32),
+      id: one,
       uri: Amorph.from(amorphAscii, 'https://uris.com/b'),
       sunsetLength: Amorph.from(amorphNumber.unsigned, 31536000), //1 year
       redemptionCodeHash: getRandomAmorph(32)
@@ -52,6 +52,9 @@ describe('gcnft0', () => {
     it('should have correct code', () => {
       return ultralightbeam.eth.getCode(gcnft0.address).should.eventually.amorphEqual(gcnft0Info.runcode)
     })
+    it('should have correct code', () => {
+      return ultralightbeam.eth.getCode(gcnft0.address).should.eventually.amorphEqual(gcnft0Info.runcode)
+    })
     it('should have correct name', () => {
       return gcnft0.fetch('name()', []).should.eventually.amorphEqual(name)
     })
@@ -67,7 +70,7 @@ describe('gcnft0', () => {
   })
   describe('account 0 should mint tokenA to account 1', () => {
     it('should broadcast', () => {
-      return gcnft0.broadcast('mint(address,uint256,string,uint256)', [accounts[1].address, tokens.a.id, tokens.a.uri, tokens.a.sunsetLength], {
+      return gcnft0.broadcast('mint(address,string,uint256)', [accounts[1].address, tokens.a.uri, tokens.a.sunsetLength], {
         from: accounts[0]
       }).getConfirmation()
     })
@@ -83,7 +86,7 @@ describe('gcnft0', () => {
   })
   describe('account 1 should NOT BE ABLE TO mint tokenB to account 1', () => {
     it('should broadcast', () => {
-      return gcnft0.broadcast('mint(address,uint256,string,uint256)', [accounts[1].address, tokens.b.id, tokens.b.uri], {
+      return gcnft0.broadcast('mint(address,string,uint256)', [accounts[1].address, tokens.a.uri, tokens.a.sunsetLength], {
         from: accounts[1]
       }).getConfirmation().should.be.rejectedWith(FailedTransactionError)
     })
@@ -94,7 +97,7 @@ describe('gcnft0', () => {
   })
   describe('account 0 should mint tokenB to account 1', () => {
     it('should broadcast', () => {
-      return gcnft0.broadcast('mint(address,uint256,string,uint256)', [accounts[1].address, tokens.b.id, tokens.b.uri, tokens.b.sunsetLength], {
+      return gcnft0.broadcast('mint(address,string,uint256)', [accounts[1].address, tokens.b.uri, tokens.b.sunsetLength], {
         from: accounts[0]
       }).getConfirmation()
     })
