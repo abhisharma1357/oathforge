@@ -55,29 +55,12 @@ commander
 
   commander
     .version('0.0.0')
-    .command('mint <network> <id>').action(async (network, _tokenId) => {
-
-      const tokenId = parseInt(_tokenId)
-
-      if (tokenId === NaN) {
-        throw new Error(`${_tokenId} is not a number`)
-      }
-
-      const imageFileBuffer = fs.readFileSync(`${__dirname}/../test/blacklotus.jpg`)
-      const imageFile = new Uint8Array(imageFileBuffer)
-      const imageMultihashB58 = await uploadToIpfs(imageFile)
+    .command('mint <network> <addressHex>').action(async (network, addressHex) => {
 
       const account = await getAccount(network)
       const ulb = await getUlb(network)
 
-      // const address = await recursivePrompt('contract address: ', (contractAddressHexUnprefixed) => {
-      //   if (contractAddressHexUnprefixed.length !== 40) {
-      //     throw new Error('contract address should be 40 characters long')
-      //   }
-      //   return Amorph.from(amorphHex.unprefixed, contractAddressHexUnprefixed)
-      // })
-
-      const address = Amorph.from(amorphHex.unprefixed, 'f7310922dAC1A8661332217FDF33aFbCD78041BB')
+      const address = Amorph.from(amorphHex.unprefixed, addressHex)
 
       await checkRuncode(network, address)
 

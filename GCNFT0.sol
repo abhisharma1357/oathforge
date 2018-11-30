@@ -2,16 +2,14 @@ pragma solidity ^0.4.24;
 
 import "ERC721.sol";
 import "ERC721Metadata.sol";
-import "ERC721Enumerable.sol";
 import "math/SafeMath.sol";
 import "ownership/Ownable.sol";
 
-contract GCNFT0 is ERC721, ERC721Metadata, ERC721Enumerable, Ownable {
+contract GCNFT0 is ERC721, ERC721Metadata, Ownable {
 
   using SafeMath for uint256;
 
   uint256 public totalSupply;
-  mapping(uint256 => address) public tokenizer;
   mapping(uint256 => uint256) public sunsetInitiatedAt;
   mapping(uint256 => uint256) public sunsetLength;
   mapping(uint256 => uint256) public redemptionCodeHashSubmittedAt;
@@ -27,15 +25,13 @@ contract GCNFT0 is ERC721, ERC721Metadata, ERC721Enumerable, Ownable {
   }
 
   function mint(address _to, string _tokenURI, uint256 _sunsetLength) public onlyOwner {
-    tokenizer[totalSupply] = msg.sender;
     sunsetLength[totalSupply] = _sunsetLength;
     _mint(_to, totalSupply);
     _setTokenURI(totalSupply, _tokenURI);
     totalSupply = totalSupply.add(1);
   }
 
-  function initiateSunset(uint256 _tokenId) public {
-    require(tokenizer[_tokenId] == msg.sender);
+  function initiateSunset(uint256 _tokenId) public onlyOwner {
     require(sunsetInitiatedAt[_tokenId] == 0);
     sunsetInitiatedAt[_tokenId] = now;
   }
