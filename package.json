@@ -24,8 +24,6 @@
     "amorph-ascii": "^1.0.0",
     "bluebird-stub": "0.0.0",
     "clear": "^0.1.0",
-    "ipfs": "^0.33.1",
-    "ipfs-api": "^26.1.2",
     "openzeppelin-solidity": "^2.0.0",
     "prompt": "^1.0.0",
     "prompt-promise": "^1.0.3",
