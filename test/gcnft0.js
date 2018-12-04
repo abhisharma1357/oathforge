@@ -407,4 +407,46 @@ describe('gcnft0', () => {
     testNextTokenId(three)
     testTotalSupply(one)
   })
+  describe('account 0 should setTokenURI of token c', () => {
+    it('should broadcast', () => {
+      return gcnft0.broadcast('setTokenURI(uint256,string)', [tokens.c.id, tokens.a.uri], {
+        from: accounts[0]
+      }).getConfirmation()
+    })
+    it('should have correct tokenUri', () => {
+      return gcnft0.fetch('tokenURI(uint256)', [tokens.c.id]).should.eventually.amorphEqual(tokens.a.uri)
+    })
+    testOwnerOf(tokens.c.id, 1)
+    testBalances([zero, one, zero, zero])
+    testNextTokenId(three)
+    testTotalSupply(one)
+  })
+  describe('account 1 should NOT be able to setTokenURI of token c', () => {
+    it('should broadcast', () => {
+      return gcnft0.broadcast('setTokenURI(uint256,string)', [tokens.c.id, tokens.a.uri], {
+        from: accounts[1]
+      }).getConfirmation().should.be.rejectedWith(FailedTransactionError)
+    })
+    it('should have correct tokenUri', () => {
+      return gcnft0.fetch('tokenURI(uint256)', [tokens.c.id]).should.eventually.amorphEqual(tokens.a.uri)
+    })
+    testOwnerOf(tokens.c.id, 1)
+    testBalances([zero, one, zero, zero])
+    testNextTokenId(three)
+    testTotalSupply(one)
+  })
+  describe('account 0 should be able to change token uri back', () => {
+    it('should broadcast', () => {
+      return gcnft0.broadcast('setTokenURI(uint256,string)', [tokens.c.id, tokens.c.uri], {
+        from: accounts[0]
+      }).getConfirmation()
+    })
+    it('should have correct tokenUri', () => {
+      return gcnft0.fetch('tokenURI(uint256)', [tokens.c.id]).should.eventually.amorphEqual(tokens.c.uri)
+    })
+    testOwnerOf(tokens.c.id, 1)
+    testBalances([zero, one, zero, zero])
+    testNextTokenId(three)
+    testTotalSupply(one)
+  })
 })
