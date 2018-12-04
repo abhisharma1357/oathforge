@@ -10,6 +10,7 @@ contract GCNFT0 is ERC721, ERC721Metadata, Ownable {
   using SafeMath for uint256;
 
   uint256 public totalSupply;
+  uint256 public nextTokenId;
   mapping(uint256 => uint256) public sunsetInitiatedAt;
   mapping(uint256 => uint256) public sunsetLength;
   mapping(uint256 => uint256) public redemptionCodeHashSubmittedAt;
@@ -25,9 +26,10 @@ contract GCNFT0 is ERC721, ERC721Metadata, Ownable {
   }
 
   function mint(address _to, string _tokenURI, uint256 _sunsetLength) public onlyOwner {
-    sunsetLength[totalSupply] = _sunsetLength;
-    _mint(_to, totalSupply);
-    _setTokenURI(totalSupply, _tokenURI);
+    sunsetLength[nextTokenId] = _sunsetLength;
+    _mint(_to, nextTokenId);
+    _setTokenURI(nextTokenId, _tokenURI);
+    nextTokenId = nextTokenId.add(1);
     totalSupply = totalSupply.add(1);
   }
 

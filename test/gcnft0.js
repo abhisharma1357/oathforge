@@ -8,6 +8,7 @@ const getRandomAmorph = require('ultralightbeam/lib/getRandomAmorph')
 const BluebirdStub = require('bluebird-stub')
 const testBalances = require('./testBalances')
 const testOwnerOf = require('./testOwnerOf')
+const testNextTokenId = require('./testNextTokenId')
 const testTotalSupply = require('./testTotalSupply')
 const gcnft0Stub = require('./gcnft0Stub')
 const amorphAscii = require('amorph-ascii')
@@ -21,6 +22,7 @@ describe('gcnft0', () => {
   const zero = Amorph.from(amorphNumber.unsigned, 0)
   const one = Amorph.from(amorphNumber.unsigned, 1)
   const two = Amorph.from(amorphNumber.unsigned, 2)
+  const three = Amorph.from(amorphNumber.unsigned, 3)
   const empty = new Amorph((new Uint8Array(32)).fill(0))
 
   const tokens = {
@@ -34,6 +36,12 @@ describe('gcnft0', () => {
       id: one,
       uri: Amorph.from(amorphAscii, 'https://uris.com/b'),
       sunsetLength: Amorph.from(amorphNumber.unsigned, 31536000), //1 year
+      redemptionCodeHash: getRandomAmorph(32)
+    },
+    c: {
+      id: two,
+      uri: Amorph.from(amorphAscii, 'https://uris.com/c'),
+      sunsetLength: Amorph.from(amorphNumber.unsigned, 7776000), //1 year
       redemptionCodeHash: getRandomAmorph(32)
     },
   }
@@ -66,6 +74,7 @@ describe('gcnft0', () => {
     })
     testOwnerOf(tokens.a.id, null)
     testBalances([zero, zero, zero, zero])
+    testNextTokenId(zero)
     testTotalSupply(zero)
   })
   describe('account 0 should mint tokenA to account 1', () => {
@@ -82,6 +91,7 @@ describe('gcnft0', () => {
     })
     testOwnerOf(tokens.a.id, 1)
     testBalances([zero, one, zero, zero])
+    testNextTokenId(one)
     testTotalSupply(one)
   })
   describe('account 1 should NOT BE ABLE TO mint tokenB to account 1', () => {
@@ -93,6 +103,7 @@ describe('gcnft0', () => {
     testOwnerOf(tokens.a.id, 1)
     testOwnerOf(tokens.b.id, null)
     testBalances([zero, one, zero, zero])
+    testNextTokenId(one)
     testTotalSupply(one)
   })
   describe('account 0 should mint tokenB to account 1', () => {
@@ -110,6 +121,7 @@ describe('gcnft0', () => {
     testOwnerOf(tokens.a.id, 1)
     testOwnerOf(tokens.b.id, 1)
     testBalances([zero, two, zero, zero])
+    testNextTokenId(two)
     testTotalSupply(two)
   })
   describe('account 0 should NOT BE ABLE TO transfer tokenA from account 0 to account 2', () => {
@@ -121,6 +133,7 @@ describe('gcnft0', () => {
     testOwnerOf(tokens.a.id, 1)
     testOwnerOf(tokens.b.id, 1)
     testBalances([zero, two, zero, zero])
+    testNextTokenId(two)
     testTotalSupply(two)
   })
   describe('account 0 should NOT BE ABLE TO transfer tokenA from account 1 to account 2', () => {
@@ -132,6 +145,7 @@ describe('gcnft0', () => {
     testOwnerOf(tokens.a.id, 1)
     testOwnerOf(tokens.b.id, 1)
     testBalances([zero, two, zero, zero])
+    testNextTokenId(two)
     testTotalSupply(two)
   })
   describe('account 1 should transfer tokenA from account 1 to account 2', () => {
@@ -143,6 +157,7 @@ describe('gcnft0', () => {
     testOwnerOf(tokens.a.id, 2)
     testOwnerOf(tokens.b.id, 1)
     testBalances([zero, one, one, zero])
+    testNextTokenId(two)
     testTotalSupply(two)
   })
   describe('account 2 should NOT BE ABLE TO sunset tokenA', () => {
@@ -157,6 +172,7 @@ describe('gcnft0', () => {
     testOwnerOf(tokens.a.id, 2)
     testOwnerOf(tokens.b.id, 1)
     testBalances([zero, one, one, zero])
+    testNextTokenId(two)
     testTotalSupply(two)
   })
   describe('account 0 should sunset tokenA', () => {
@@ -175,6 +191,7 @@ describe('gcnft0', () => {
     testOwnerOf(tokens.a.id, 2)
     testOwnerOf(tokens.b.id, 1)
     testBalances([zero, one, one, zero])
+    testNextTokenId(two)
     testTotalSupply(two)
   })
   describe('account 2 should safeTransferFrom tokenA from account 2 to account 3', () => {
@@ -186,6 +203,7 @@ describe('gcnft0', () => {
     testOwnerOf(tokens.a.id, 3)
     testOwnerOf(tokens.b.id, 1)
     testBalances([zero, one, zero, one])
+    testNextTokenId(two)
     testTotalSupply(two)
   })
   describe('account 0 should NOT BE ABLE TO submit redemption code hash', () => {
@@ -203,6 +221,7 @@ describe('gcnft0', () => {
     testOwnerOf(tokens.a.id, 3)
     testOwnerOf(tokens.b.id, 1)
     testBalances([zero, one, zero, one])
+    testNextTokenId(two)
     testTotalSupply(two)
   })
   describe('account 3 should submit redemption code hash', () => {
@@ -224,6 +243,7 @@ describe('gcnft0', () => {
     testOwnerOf(tokens.a.id, null)
     testOwnerOf(tokens.b.id, 1)
     testBalances([zero, one, zero, zero])
+    testNextTokenId(two)
     testTotalSupply(one)
   })
   describe('account 0 should sunset tokenB', () => {
@@ -242,6 +262,7 @@ describe('gcnft0', () => {
     testOwnerOf(tokens.a.id, null)
     testOwnerOf(tokens.b.id, 1)
     testBalances([zero, one, zero, zero])
+    testNextTokenId(two)
     testTotalSupply(one)
   })
   describe('account 1 should transfer tokenB from account 1 to account 2', () => {
@@ -253,6 +274,7 @@ describe('gcnft0', () => {
     testOwnerOf(tokens.a.id, null)
     testOwnerOf(tokens.b.id, 2)
     testBalances([zero, zero, one, zero])
+    testNextTokenId(two)
     testTotalSupply(one)
   })
   describe('skip time', () => {
@@ -309,6 +331,7 @@ describe('gcnft0', () => {
     testOwnerOf(tokens.a.id, null)
     testOwnerOf(tokens.b.id, 2)
     testBalances([zero, zero, one, zero])
+    testNextTokenId(two)
     testTotalSupply(one)
   })
   describe('account 2 should NOT BE ABLE TO safeTransferFrom tokenB from account 2 to account 3', () => {
@@ -320,6 +343,7 @@ describe('gcnft0', () => {
     testOwnerOf(tokens.a.id, null)
     testOwnerOf(tokens.b.id, 2)
     testBalances([zero, zero, one, zero])
+    testNextTokenId(two)
     testTotalSupply(one)
   })
   describe('account 2 should submit redemption code hash', () => {
@@ -341,6 +365,46 @@ describe('gcnft0', () => {
     testOwnerOf(tokens.a.id, null)
     testOwnerOf(tokens.b.id, null)
     testBalances([zero, zero, zero, zero])
+    testNextTokenId(two)
     testTotalSupply(zero)
+  })
+  describe('account 2 should NOT be able to re-submit redemption code hash', () => {
+    it('should broadcast', () => {
+      return gcnft0.broadcast('submitRedemptionCodeHash(bytes32,uint256)', [getRandomAmorph(32), tokens.b.id], {
+        from: accounts[2]
+      }).getConfirmation().should.be.rejectedWith(FailedTransactionError)
+    })
+    it('redemptionCodeHash should be correct', () => {
+      return gcnft0.fetch('redemptionCodeHash(uint256)', [tokens.b.id]).should.eventually.amorphEqual(tokens.b.redemptionCodeHash)
+    })
+    it('redemptionCodeHashSubmittedAt should be zero', () => {
+      return gcnft0.fetch('redemptionCodeHashSubmittedAt(uint256)', [tokens.b.id]).then((redemptionCodeHashSubmittedAt) => {
+        return ultralightbeam.getLatestBlock().then((block) => {
+          block.timestamp.should.amorphEqual(redemptionCodeHashSubmittedAt)
+        })
+      })
+    })
+    testOwnerOf(tokens.a.id, null)
+    testOwnerOf(tokens.b.id, null)
+    testBalances([zero, zero, zero, zero])
+    testNextTokenId(two)
+    testTotalSupply(zero)
+  })
+  describe('account 0 should mint tokenC to account 1', () => {
+    it('should broadcast', () => {
+      return gcnft0.broadcast('mint(address,string,uint256)', [accounts[1].address, tokens.c.uri, tokens.c.sunsetLength], {
+        from: accounts[0]
+      }).getConfirmation()
+    })
+    it('should have correct tokenUri', () => {
+      return gcnft0.fetch('tokenURI(uint256)', [tokens.c.id]).should.eventually.amorphEqual(tokens.c.uri)
+    })
+    it('should have correct sunsetLength', () => {
+      return gcnft0.fetch('sunsetLength(uint256)', [tokens.c.id]).should.eventually.amorphEqual(tokens.c.sunsetLength)
+    })
+    testOwnerOf(tokens.c.id, 1)
+    testBalances([zero, one, zero, zero])
+    testNextTokenId(three)
+    testTotalSupply(one)
   })
 })

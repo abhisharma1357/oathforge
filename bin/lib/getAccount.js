@@ -1,33 +1,17 @@
-const Account = require('ultralightbeam/lib/Account')
-const Amorph = require('amorph')
-const amorphHex = require('amorph-hex')
-const Promise = require('bluebird')
-const prompt = require('prompt-promise')
 const fs = require('fs')
+const prompt = require('prompt-promise')
+const Amorph = require('amorph')
+const Account = require('ultralightbeam/lib/Account')
+const amorphHex = require('amorph-hex')
+const colors = require('colors')
+const keythereum = require('keythereum')
 
-let account
-
-module.exports = async function getAccount(network) {
-  if (account) {
-    return Promise.resolve(account)
-  }
-  if (network === 'local') {
-    account = Account.generate()
-    return Promise.resolve(account)
-  }
-  const privateKeyHexUnprefixed = fs.readFileSync(`${__dirname}/../../secrets/privateKeyHexUnprefixed.txt`, 'utf8').trim()
-  if (privateKeyHexUnprefixed.length !== 64) {
-    console.log('Invalid private key length (should be 40 characters)'.red)
-    return getAccount(network)
-  }
-  const privateKey =  Amorph.from(amorphHex.unprefixed, privateKeyHexUnprefixed)
-  account = new Account(privateKey)
-  return prompt(`Address is ${account.address.to(amorphHex.unprefixed)}, correct? (y/n): `).then((response) => {
-    prompt.end()
-    if (response !== 'y') {
-      console.log('Incorrect address, exiting'.red)
-      process.exit()
-    }
-    return account
-  })
+module.exports = async function getAccount(keypath) {
+  const keyObject = JSON.parse(fs.readFileSync(keypath))
+  const password = await prompt.password('password: ')
+  const privateKeyBuffer = keythereum.recover(password, keyObject);
+  const privateKey = new Amorph(new Uint8Array(privateKeyBuffer))
+  const account = new Account(privateKey)
+  console.log(`Unlocked ${account.address.to(amorphHex.unprefixed)}`.green)
+  return account
 }

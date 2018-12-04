@@ -24,6 +24,7 @@
     "amorph-ascii": "^1.0.0",
     "bluebird-stub": "0.0.0",
     "clear": "^0.1.0",
+    "keythereum": "^1.0.4",
     "openzeppelin-solidity": "^2.0.0",
     "prompt": "^1.0.0",
     "prompt-promise": "^1.0.3",

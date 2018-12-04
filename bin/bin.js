@@ -5,9 +5,10 @@ const fs = require('fs')
 
 const getUlb = require('./lib/getUlb')
 const getGcnft0Info = require('./lib/getGcnft0Info')
-const getAccount = require('./lib/getAccount')
 const checkRuncode = require('./lib/checkRuncode')
-const uploadToIpfs = require('./lib/uploadToIpfs')
+const recursivePrompt = require('./lib/recursivePrompt')
+const recursivePromptAddress = require('./lib/recursivePromptAddress')
+const getAccount = require('./lib/getAccount')
 
 const Amorph = require('amorph')
 const amorphHex = require('amorph-hex')
@@ -16,21 +17,32 @@ const SolWrapper = require('ultralightbeam/lib/SolWrapper')
 const getRandomAmorph = require('ultralightbeam/lib/getRandomAmorph')
 const amorphAscii = require('amorph-ascii')
 const amorphNumber = require('amorph-number')
+const keythereum = require('keythereum')
+const Account = require('ultralightbeam/lib/Account')
 
-clear()
+
+console.log("\r\n\r\n\r\n\r\n\r\n")
 
 commander
   .version('0.0.0')
-  .command('deploy <network>').action(async (network) => {
+  .command('deploy <keypath>').action(async (keypath) => {
+
+    const account = await getAccount(keypath)
+
+    const network = await recursivePrompt('network: ', (network) => {
+      if (network !== 'rinkeby' && network !== 'mainnet') {
+        throw new Error('only rinkeby & mainnet supported')
+      }
+    })
+
     const ulb = await getUlb(network)
     const gcnft0Info = getGcnft0Info()
-    const account = await getAccount(network)
 
     console.log('Deploying gcNFT0...'.cyan)
 
     const timestamp = (new Date).getTime()
-    const name = Amorph.from(amorphAscii, `GuildCryptNFT0Test${timestamp}`)
-    const symbol = Amorph.from(amorphAscii, `GCNFT0TEST${timestamp}`)
+    const name = Amorph.from(amorphAscii, `GuildCrypt 0`)
+    const symbol = Amorph.from(amorphAscii, `GC:0`)
 
     return ulb.solDeploy(gcnft0Info.code, gcnft0Info.abi, [name, symbol], {
       from: account
@@ -42,69 +54,88 @@ commander
     })
   })
 
-  async function recursivePrompt(input, callback) {
-    return prompt(input).then((response) => {
-      try {
-        return callback(response)
-      } catch(e) {
-        console.log(e.message.red)
-        return recursivePrompt(input, callback)
+commander
+  .version('0.0.0')
+  .command('mint <keypath>').action(async (keypath) => {
+
+    const account = await getAccount(keypath)
+
+    const network = await recursivePrompt('network: ', (network) => {
+      if (network !== 'rinkeby' && network !== 'mainnet') {
+        throw new Error('only rinkeby & mainnet supported')
       }
     })
-  }
+    const ulb = await getUlb(network)
 
-  commander
-    .version('0.0.0')
-    .command('mint <network> <addressHex>').action(async (network, addressHex) => {
+    const contractAddress = await recursivePromptAddress('contract address (hex): ')
 
-      const account = await getAccount(network)
-      const ulb = await getUlb(network)
+    await checkRuncode(network, contractAddress)
 
-      const address = Amorph.from(amorphHex.unprefixed, addressHex)
+    const gcnft0Info = require('../')
+    const gcnft0 = new SolWrapper(ulb, gcnft0Info.abi, contractAddress)
 
-      await checkRuncode(network, address)
+    const nextTokenId = await gcnft0.fetch('nextTokenId()', [])
+    const nextTokenIdNumber = nextTokenId.to(amorphNumber.unsigned)
 
-      const gcnft0Info = require('../')
-      const gcnft0 = new SolWrapper(ulb, gcnft0Info.abi, address)
+    console.log(`Total supply is currently ${nextTokenIdNumber}`.cyan)
 
-      // const receiverAddress = await recursivePrompt('receiver address: ', (receiverAddressHexUnprefixed) => {
-      //   if (receiverAddressHexUnprefixed.length !== 40) {
-      //     throw new Error('receiver address should be 40 characters long')
-      //   }
-      //   return Amorph.from(amorphHex.unprefixed, receiverAddressHexUnprefixed)
-      // })
+    const receiverAddress = await recursivePromptAddress('receiver address (hex): ')
 
-      const receiverAddress = Amorph.from(amorphHex.unprefixed, 'efc63ebf2e9b3e9bd98fcd83bb1e2798efccb6b9')
-
-      const sunsetLengthNumberString = await prompt('sunset length (seconds): ')
-      const sunsetLength = Amorph.from(amorphNumber.unsigned, parseInt(sunsetLengthNumberString))
-      const name = await prompt('name: ')
-      const description = await prompt('description: ')
-      const metadataJson = JSON.stringify({
-        name,
-        description,
-        image: `https://cloudflare-ipfs.com/ipfs/${imageMultihashB58}`
-      })
-      const mutlihashB58 = await uploadToIpfs(Buffer.from(metadataJson, 'ascii'))
-      console.log(`https://cloudflare-ipfs.com/ipfs/${mutlihash}`)
-      const tokenUri = Amorph.from(amorphAscii, `https://cloudflare-ipfs.com/ipfs/${mutlihashB58}`)
-
-      console.log(`Minting token ${tokenId.to(amorphHex.unprefixed)} to ${receiverAddress.to(amorphHex.unprefixed)}...`.cyan)
-      return gcnft0.broadcast('mint(address,uint256,string,uint256)', [receiverAddress, tokenId, tokenUri, sunsetLength], {
-        from: account
-      }).getConfirmation().then(() => {
-        console.log(`Confirming...`.cyan)
-        return gcnft0.fetch('ownerOf(uint256)', [tokenId])
-      }).then((owner) => {
-        if (owner.equals(receiverAddress)) {
-          console.log('Token successfully minted!'.cyan)
-          process.exit()
-        } else {
-          console.log('Something went wrong...'.red)
-          process.exit()
-        }
-      })
-
+    const sunsetLengthString = await recursivePrompt('sunset length (seconds): ', (sunsetLengthString) => {
+      if (parseInt(sunsetLengthString) === NaN) {
+        throw new Error('should be a number')
+      }
     })
+    const sunsetLength = Amorph.from(amorphNumber.unsigned, parseInt(sunsetLengthString))
+
+    const tokenUriString = await prompt('token uri: ')
+    const tokenUri = Amorph.from(amorphAscii, tokenUriString)
+
+    console.log(`Minting token to ${receiverAddress.to(amorphHex.unprefixed)}...`.cyan)
+    return gcnft0.broadcast('mint(address,string,uint256)', [receiverAddress, tokenUri, sunsetLength], {
+      from: account
+    }).getConfirmation().then(() => {
+      console.log(`Confirming...`.cyan)
+      return gcnft0.fetch('nextTokenId()', [])
+    }).then((_nextTokenId) => {
+      const _nextTokenIdNumber = _nextTokenId.to(amorphNumber.unsigned)
+      if (nextTokenIdNumber + 1 === _nextTokenIdNumber) {
+        console.log('Token successfully minted!'.cyan)
+        process.exit()
+      } else {
+        console.log(`Something went wrong. Total supply should be ${nextTokenIdNumber + 1 } not ${_nextTokenIdNumber}`.red)
+        process.exit()
+      }
+    })
+
+  })
+
+commander
+  .version('0.0.0')
+  .command('stats').action(async () => {
+    const ulb = await getUlb('mainnet')
+    const contractAddress = await recursivePromptAddress('contract address: ')
+    const gcnft0Info = require('../')
+    const gcnft0 = new SolWrapper(ulb, gcnft0Info.abi, contractAddress)
+
+    const nextTokenId = await gcnft0.fetch('nextTokenId()', [])
+    const nextTokenIdNumber = nextTokenId.to(amorphNumber.unsigned)
+    console.log(`Total supply: ${nextTokenIdNumber}`.green)
+
+    for (let i = 0; i < nextTokenIdNumber; i++) {
+      const tokenId = Amorph.from(amorphNumber.unsigned, i)
+      console.log('================================')
+      console.log(`Token id: ${nextTokenIdNumber}`)
+      const sunsetLength = await gcnft0.fetch('sunsetLength(uint256)', [tokenId])
+      console.log(`Sunset length: ${sunsetLength.to(amorphNumber.unsigned)}`)
+    }
+  })
+
+commander
+  .version('0.0.0')
+  .command('abi').action(async () => {
+    const gcnft0Info = require('../')
+    console.log(JSON.stringify(gcnft0Info.abi))
+  })
 
 commander.parse(process.argv)
