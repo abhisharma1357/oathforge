@@ -208,7 +208,7 @@ describe('gcnft0', () => {
   })
   describe('account 0 should NOT BE ABLE TO submit redemption code hash', () => {
     it('should REJECT broadcast', () => {
-      return gcnft0.broadcast('submitRedemptionCodeHash(bytes32,uint256)', [tokens.a.redemptionCodeHash, tokens.a.id], {
+      return gcnft0.broadcast('submitRedemptionCodeHash(uint256,bytes32)', [tokens.a.id, tokens.a.redemptionCodeHash], {
         from: accounts[0]
       }).getConfirmation().should.be.rejectedWith(FailedTransactionError)
     })
@@ -226,7 +226,7 @@ describe('gcnft0', () => {
   })
   describe('account 3 should submit redemption code hash', () => {
     it('should broadcast', () => {
-      return gcnft0.broadcast('submitRedemptionCodeHash(bytes32,uint256)', [tokens.a.redemptionCodeHash, tokens.a.id], {
+      return gcnft0.broadcast('submitRedemptionCodeHash(uint256,bytes32)', [tokens.a.id, tokens.a.redemptionCodeHash], {
         from: accounts[3]
       }).getConfirmation()
     })
@@ -348,7 +348,7 @@ describe('gcnft0', () => {
   })
   describe('account 2 should submit redemption code hash', () => {
     it('should broadcast', () => {
-      return gcnft0.broadcast('submitRedemptionCodeHash(bytes32,uint256)', [tokens.b.redemptionCodeHash, tokens.b.id], {
+      return gcnft0.broadcast('submitRedemptionCodeHash(uint256,bytes32)', [tokens.b.id, tokens.b.redemptionCodeHash], {
         from: accounts[2]
       }).getConfirmation()
     })
@@ -370,7 +370,7 @@ describe('gcnft0', () => {
   })
   describe('account 2 should NOT be able to re-submit redemption code hash', () => {
     it('should broadcast', () => {
-      return gcnft0.broadcast('submitRedemptionCodeHash(bytes32,uint256)', [getRandomAmorph(32), tokens.b.id], {
+      return gcnft0.broadcast('submitRedemptionCodeHash(uint256,bytes32)', [tokens.b.id, getRandomAmorph(32)], {
         from: accounts[2]
       }).getConfirmation().should.be.rejectedWith(FailedTransactionError)
     })

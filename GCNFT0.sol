@@ -38,7 +38,7 @@ contract GCNFT0 is ERC721, ERC721Metadata, Ownable {
     sunsetInitiatedAt[_tokenId] = now;
   }
 
-  function submitRedemptionCodeHash(bytes32 _redemptionCodeHash, uint256 _tokenId) public {
+  function submitRedemptionCodeHash(uint256 _tokenId, bytes32 _redemptionCodeHash) public {
     _burn(msg.sender, _tokenId);
     redemptionCodeHashSubmittedAt[_tokenId] = now;
     redemptionCodeHash[_tokenId] = _redemptionCodeHash;
@@ -47,6 +47,10 @@ contract GCNFT0 is ERC721, ERC721Metadata, Ownable {
 
   function transferFrom(address _from, address _to, uint256 _tokenId) public notSunsetFinished(_tokenId) {
     super.transferFrom(_from, _to, _tokenId);
+  }
+
+  function setTokenURI(uint256 _tokenId, string _tokenURI) public onlyOwner {
+    _setTokenURI(_tokenId, _tokenURI);
   }
 
 }
