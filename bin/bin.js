@@ -118,17 +118,24 @@ commander
     const gcnft0Info = require('../')
     const gcnft0 = new SolWrapper(ulb, gcnft0Info.abi, contractAddress)
 
-    const nextTokenId = await gcnft0.fetch('nextTokenId()', [])
-    const nextTokenIdNumber = nextTokenId.to(amorphNumber.unsigned)
-    console.log(`Total supply: ${nextTokenIdNumber}`.green)
+    const totalSupply = await gcnft0.fetch('totalSupply()', [])
+    const totalSupplyNumber = totalSupply.to(amorphNumber.unsigned)
+    console.log(`Total supply: ${totalSupplyNumber}`.green)
 
-    for (let i = 0; i < nextTokenIdNumber; i++) {
+    for (let i = 0; i < 3; i++) {
       const tokenId = Amorph.from(amorphNumber.unsigned, i)
       console.log('================================')
-      console.log(`Token id: ${nextTokenIdNumber}`)
+      console.log(`Token id: ${tokenId.to(amorphNumber.unsigned)}`)
       const sunsetLength = await gcnft0.fetch('sunsetLength(uint256)', [tokenId])
       console.log(`Sunset length: ${sunsetLength.to(amorphNumber.unsigned)}`)
+      const owner = await gcnft0.fetch('ownerOf(uint256)', [tokenId])
+      console.log(`Owner: ${owner.to(amorphHex.unprefixed)}`)
+      const redemptionCodeHashSubmittedAt = await gcnft0.fetch('redemptionCodeHashSubmittedAt(uint256)', [tokenId])
+      console.log(`Redemption Code Submitted At: ${redemptionCodeHashSubmittedAt.to(amorphNumber.unsigned)}`)
+      const redemptionCodeHash = await gcnft0.fetch('redemptionCodeHash(uint256)', [tokenId])
+      console.log(`Redemption Code: ${redemptionCodeHash.to(amorphHex.unprefixed)}`)
     }
+    process.exit()
   })
 
 commander
