@@ -1,11 +1,11 @@
-let gcnft0
+let gc0
 
-module.exports = function getgcnft0Info() {
-  if (gcnft0) {
-    return gcnft0
+module.exports = function getgc0Info() {
+  if (gc0) {
+    return gc0
   }
   console.log('Compiling gcNFT0...'.cyan)
-  gcnft0  = require('../../')
+  gc0  = require('../../')
   console.log('Compiling gcNFT0 complete'.green)
-  return gcnft0
+  return gc0
 }

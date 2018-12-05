@@ -5,7 +5,7 @@ import "ERC721Metadata.sol";
 import "math/SafeMath.sol";
 import "ownership/Ownable.sol";
 
-contract GCNFT0 is ERC721, ERC721Metadata, Ownable {
+contract GC0 is ERC721, ERC721Metadata, Ownable {
 
   using SafeMath for uint256;
 

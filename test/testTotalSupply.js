@@ -1,12 +1,12 @@
 const accounts = require('./accounts')
 const amorphNumber = require('amorph-number')
-const gcnft0Stub = require('./gcnft0Stub')
+const gc0Stub = require('./gc0Stub')
 
 module.exports = function testTotalSupply(totalSupply) {
   describe('totalSupply', () => {
     it(`should be ${totalSupply.to(amorphNumber.unsigned)}`, () => {
-      return gcnft0Stub.promise.then((gcnft0) => {
-        return gcnft0.fetch('totalSupply()', []).should.eventually.amorphEqual(totalSupply)
+      return gc0Stub.promise.then((gc0) => {
+        return gc0.fetch('totalSupply()', []).should.eventually.amorphEqual(totalSupply)
       })
     })
   })
