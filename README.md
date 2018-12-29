@@ -90,7 +90,7 @@ Author: GuildCrypt
 ##### Inputs
 |  | Type | Name | Description |
 |---|---|---|---|
-| `0` | `uint256` | `_tokenId` |  |
+| `0` | `uint256` | `_tokenId` | The id of the token |
 ---
 #### <a name="isApprovedForAll(address,address)"></a> `isApprovedForAll(address,address)`
 ##### Inputs
@@ -202,15 +202,15 @@ Author: GuildCrypt
 ##### Inputs
 |  | Type | Name | Description |
 |---|---|---|---|
-| `0` | `uint256` | `_tokenId` |  |
-| `1` | `string` | `_tokenURI` |  |
+| `0` | `uint256` | `_tokenId` | The id of the token |
+| `1` | `string` | `_tokenURI` | The token URI |
 ---
 #### <a name="submitRedemptionCodeHash(uint256,bytes32)"></a> `submitRedemptionCodeHash(uint256,bytes32)`
 ##### Inputs
 |  | Type | Name | Description |
 |---|---|---|---|
-| `0` | `uint256` | `_tokenId` |  |
-| `1` | `bytes32` | `_redemptionCodeHash` |  |
+| `0` | `uint256` | `_tokenId` | The id of the token |
+| `1` | `bytes32` | `_redemptionCodeHash` | The redemption code hash |
 ---
 #### <a name="sunsetInitiatedAt(uint256)"></a> `sunsetInitiatedAt(uint256)`
 ##### Inputs
@@ -276,9 +276,9 @@ Author: GuildCrypt
 ##### Inputs
 |  | Type | Name | Description |
 |---|---|---|---|
-| `0` | `address` | `_from` |  |
-| `1` | `address` | `_to` |  |
-| `2` | `uint256` | `_tokenId` |  |
+| `0` | `address` | `_from` | current owner of the token |
+| `1` | `address` | `_to` | address to receive the ownership of the given token ID |
+| `2` | `uint256` | `_tokenId` | uint256 ID of the token to be transferred |
 ---
 #### <a name="transferOwnership(address)"></a> `transferOwnership(address)`
 ##### Inputs
