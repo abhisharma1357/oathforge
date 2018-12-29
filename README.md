@@ -1,5 +1,7 @@
 # NFT Token Registry
 Author: GuildCrypt
+
+
 | Name | Type |
 |---|---|
 | [`Approval(address,address,uint256)`](#Approval(address,address,uint256)) | event |
