@@ -1,2 +1,6 @@
 node_modules
 secrets
+output-cache.js
+output.cache.js
+doc.js
+readme.html

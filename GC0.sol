@@ -5,6 +5,8 @@ import "ERC721Metadata.sol";
 import "math/SafeMath.sol";
 import "ownership/Ownable.sol";
 
+/// @title NFT Token Registry
+/// @author GuildCrypt
 contract GC0 is ERC721, ERC721Metadata, Ownable {
 
   using SafeMath for uint256;
@@ -25,6 +27,10 @@ contract GC0 is ERC721, ERC721Metadata, Ownable {
     _;
   }
 
+  /// @dev Mint a token
+  /// @param _to The receiver of the token
+  /// @param _tokenURI The tokenURI of the the tokenURI
+  /// @param _sunsetLength The length (in seconds) that a sunset period can last
   function mint(address _to, string _tokenURI, uint256 _sunsetLength) public onlyOwner {
     sunsetLength[nextTokenId] = _sunsetLength;
     _mint(_to, nextTokenId);
