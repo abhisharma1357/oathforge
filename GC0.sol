@@ -27,7 +27,7 @@ contract GC0 is ERC721, ERC721Metadata, Ownable {
     _;
   }
 
-  /// @dev Mint a token
+  /// @dev Mint a token. Only `owner` may call this function.
   /// @param _to The receiver of the token
   /// @param _tokenURI The tokenURI of the the tokenURI
   /// @param _sunsetLength The length (in seconds) that a sunset period can last
@@ -39,11 +39,16 @@ contract GC0 is ERC721, ERC721Metadata, Ownable {
     totalSupply = totalSupply.add(1);
   }
 
+  /// @dev Initiate a sunset. Sets `sunsetInitiatedAt` to current timestamp. Only `owner` may call this function.
+  /// @param _tokenId The id of the token
   function initiateSunset(uint256 _tokenId) public onlyOwner {
     require(sunsetInitiatedAt[_tokenId] == 0);
     sunsetInitiatedAt[_tokenId] = now;
   }
 
+  /// @dev Submit a redemption code hash for a specific token. Burns the token. Sets `redemptionCodeHashSubmittedAt` to current timestamp. Decreases `totalSupply` by 1.
+  /// @param _tokenId The id of the token
+  /// @param _redemptionCodeHash The redemption code hash
   function submitRedemptionCodeHash(uint256 _tokenId, bytes32 _redemptionCodeHash) public {
     _burn(msg.sender, _tokenId);
     redemptionCodeHashSubmittedAt[_tokenId] = now;
@@ -51,10 +56,21 @@ contract GC0 is ERC721, ERC721Metadata, Ownable {
     totalSupply = totalSupply.sub(1);
   }
 
+  /**
+     * @dev Transfers the ownership of a given token ID to another address
+     * Usage of this method is discouraged, use `safeTransferFrom` whenever possible
+     * Requires the msg sender to be the owner, approved, or operator
+     * @param _from current owner of the token
+     * @param _to address to receive the ownership of the given token ID
+     * @param _tokenId uint256 ID of the token to be transferred
+    */
   function transferFrom(address _from, address _to, uint256 _tokenId) public notSunsetFinished(_tokenId) {
     super.transferFrom(_from, _to, _tokenId);
   }
 
+  /// @dev Set `tokenUri`. Only `owner` may do this.
+  /// @param _tokenId The id of the token
+  /// @param _tokenURI The token URI
   function setTokenURI(uint256 _tokenId, string _tokenURI) public onlyOwner {
     _setTokenURI(_tokenId, _tokenURI);
   }
