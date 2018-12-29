@@ -56,14 +56,10 @@ contract GC0 is ERC721, ERC721Metadata, Ownable {
     totalSupply = totalSupply.sub(1);
   }
 
-  /**
-     * @dev Transfers the ownership of a given token ID to another address
-     * Usage of this method is discouraged, use `safeTransferFrom` whenever possible
-     * Requires the msg sender to be the owner, approved, or operator
-     * @param _from current owner of the token
-     * @param _to address to receive the ownership of the given token ID
-     * @param _tokenId uint256 ID of the token to be transferred
-    */
+  /// @dev Transfers the ownership of a given token ID to another address. Usage of this method is discouraged, use `safeTransferFrom` whenever possible. Requires the msg sender to be the owner, approved, or operator
+  /// @param _from current owner of the token
+  /// @param _to address to receive the ownership of the given token ID
+  /// @param _tokenId uint256 ID of the token to be transferred
   function transferFrom(address _from, address _to, uint256 _tokenId) public notSunsetFinished(_tokenId) {
     super.transferFrom(_from, _to, _tokenId);
   }
