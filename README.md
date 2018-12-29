@@ -6,36 +6,36 @@ Author: GuildCrypt
 |---|---|
 | [`Approval(address,address,uint256)`](#Approval(address,address,uint256)) | event |
 | [`ApprovalForAll(address,address,bool)`](#ApprovalForAll(address,address,bool)) | event |
-| [`approve(address,uint256)`](#approve(address,uint256)) | function |
+| [`approve(address,uint256)`](#approve(address,uint256)) | function (non-constant) |
 | [`constructor(string,string)`](#constructor(string,string)) | constructor |
-| [`balanceOf(address)`](#balanceOf(address)) | function |
-| [`getApproved(uint256)`](#getApproved(uint256)) | function |
-| [`initiateSunset(uint256)`](#initiateSunset(uint256)) | function |
-| [`isApprovedForAll(address,address)`](#isApprovedForAll(address,address)) | function |
-| [`isOwner()`](#isOwner()) | function |
-| [`mint(address,string,uint256)`](#mint(address,string,uint256)) | function |
-| [`name()`](#name()) | function |
-| [`nextTokenId()`](#nextTokenId()) | function |
-| [`owner()`](#owner()) | function |
-| [`ownerOf(uint256)`](#ownerOf(uint256)) | function |
+| [`balanceOf(address)`](#balanceOf(address)) | function (constant) |
+| [`getApproved(uint256)`](#getApproved(uint256)) | function (constant) |
+| [`initiateSunset(uint256)`](#initiateSunset(uint256)) | function (non-constant) |
+| [`isApprovedForAll(address,address)`](#isApprovedForAll(address,address)) | function (constant) |
+| [`isOwner()`](#isOwner()) | function (constant) |
+| [`mint(address,string,uint256)`](#mint(address,string,uint256)) | function (non-constant) |
+| [`name()`](#name()) | function (constant) |
+| [`nextTokenId()`](#nextTokenId()) | function (constant) |
+| [`owner()`](#owner()) | function (constant) |
+| [`ownerOf(uint256)`](#ownerOf(uint256)) | function (constant) |
 | [`OwnershipTransferred(address,address)`](#OwnershipTransferred(address,address)) | event |
-| [`redemptionCodeHash(uint256)`](#redemptionCodeHash(uint256)) | function |
-| [`redemptionCodeHashSubmittedAt(uint256)`](#redemptionCodeHashSubmittedAt(uint256)) | function |
-| [`renounceOwnership()`](#renounceOwnership()) | function |
-| [`safeTransferFrom(address,address,uint256,bytes)`](#safeTransferFrom(address,address,uint256,bytes)) | function |
-| [`safeTransferFrom(address,address,uint256)`](#safeTransferFrom(address,address,uint256)) | function |
-| [`setApprovalForAll(address,bool)`](#setApprovalForAll(address,bool)) | function |
-| [`setTokenURI(uint256,string)`](#setTokenURI(uint256,string)) | function |
-| [`submitRedemptionCodeHash(uint256,bytes32)`](#submitRedemptionCodeHash(uint256,bytes32)) | function |
-| [`sunsetInitiatedAt(uint256)`](#sunsetInitiatedAt(uint256)) | function |
-| [`sunsetLength(uint256)`](#sunsetLength(uint256)) | function |
-| [`supportsInterface(bytes4)`](#supportsInterface(bytes4)) | function |
-| [`symbol()`](#symbol()) | function |
-| [`tokenURI(uint256)`](#tokenURI(uint256)) | function |
-| [`totalSupply()`](#totalSupply()) | function |
+| [`redemptionCodeHash(uint256)`](#redemptionCodeHash(uint256)) | function (constant) |
+| [`redemptionCodeHashSubmittedAt(uint256)`](#redemptionCodeHashSubmittedAt(uint256)) | function (constant) |
+| [`renounceOwnership()`](#renounceOwnership()) | function (non-constant) |
+| [`safeTransferFrom(address,address,uint256,bytes)`](#safeTransferFrom(address,address,uint256,bytes)) | function (non-constant) |
+| [`safeTransferFrom(address,address,uint256)`](#safeTransferFrom(address,address,uint256)) | function (non-constant) |
+| [`setApprovalForAll(address,bool)`](#setApprovalForAll(address,bool)) | function (non-constant) |
+| [`setTokenURI(uint256,string)`](#setTokenURI(uint256,string)) | function (non-constant) |
+| [`submitRedemptionCodeHash(uint256,bytes32)`](#submitRedemptionCodeHash(uint256,bytes32)) | function (non-constant) |
+| [`sunsetInitiatedAt(uint256)`](#sunsetInitiatedAt(uint256)) | function (constant) |
+| [`sunsetLength(uint256)`](#sunsetLength(uint256)) | function (constant) |
+| [`supportsInterface(bytes4)`](#supportsInterface(bytes4)) | function (constant) |
+| [`symbol()`](#symbol()) | function (constant) |
+| [`tokenURI(uint256)`](#tokenURI(uint256)) | function (constant) |
+| [`totalSupply()`](#totalSupply()) | function (constant) |
 | [`Transfer(address,address,uint256)`](#Transfer(address,address,uint256)) | event |
-| [`transferFrom(address,address,uint256)`](#transferFrom(address,address,uint256)) | function |
-| [`transferOwnership(address)`](#transferOwnership(address)) | function |
+| [`transferFrom(address,address,uint256)`](#transferFrom(address,address,uint256)) | function (non-constant) |
+| [`transferOwnership(address)`](#transferOwnership(address)) | function (non-constant) |
 #### <a name="Approval(address,address,uint256)"></a> `Approval(address,address,uint256)`
 ##### Inputs
 |  | Type | Name | Description | Indexed? |
