@@ -1,4 +1,4 @@
 const parseSolcOutput = require('ultralightbeam/lib/parseSolcOutput')
 const output = require('./output')
 
-module.exports = parseSolcOutput(output)['GC0.sol:GC0']
+module.exports = parseSolcOutput(output)['OathForge.sol:OathForge']

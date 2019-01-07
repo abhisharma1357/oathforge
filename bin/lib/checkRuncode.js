@@ -6,9 +6,9 @@ module.exports = async function checkRuncode(network, address) {
 
   const ulb = await getUlb(network)
   const runcode = await ulb.eth.getCode(address)
-  const gc0Info = getGcnft0Info()
+  const oathForgeInfo = getGcnft0Info()
 
-  if (runcode.equals(gc0Info.runcode)) {
+  if (runcode.equals(oathForgeInfo.runcode)) {
     console.log(`Runcode matches`.green)
   } else {
     console.log('Runcode does not match. Something is wrong'.red)

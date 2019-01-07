@@ -7,16 +7,16 @@ import "ownership/Ownable.sol";
 
 /// @title NFT Token Registry
 /// @author GuildCrypt
-contract GC0 is ERC721, ERC721Metadata, Ownable {
+contract OathForge is ERC721, ERC721Metadata, Ownable {
 
   using SafeMath for uint256;
 
-  uint256 public totalSupply;
-  uint256 public nextTokenId;
-  mapping(uint256 => uint256) public sunsetInitiatedAt;
-  mapping(uint256 => uint256) public sunsetLength;
-  mapping(uint256 => uint256) public redemptionCodeHashSubmittedAt;
-  mapping(uint256 => bytes32) public redemptionCodeHash;
+  uint256 private _totalSupply;
+  uint256 private _nextTokenId;
+  mapping(uint256 => uint256) private _sunsetInitiatedAt;
+  mapping(uint256 => uint256) private _sunsetLength;
+  mapping(uint256 => uint256) private _redemptionCodeHashSubmittedAt;
+  mapping(uint256 => bytes32) private _redemptionCodeHash;
 
   constructor(string _name, string _symbol) ERC721Metadata(_name, _symbol) public {}
 

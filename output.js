@@ -15,6 +15,6 @@ module.exports = solc.compile({
     'ERC721Metadata.sol': fs.readFileSync(`${zeppelinContractsDir}/token/ERC721/ERC721Metadata.sol`, 'utf8'),
     'ERC721.sol': fs.readFileSync(`${zeppelinContractsDir}/token/ERC721/ERC721.sol`, 'utf8'),
     'ownership/Ownable.sol': fs.readFileSync(`${zeppelinContractsDir}/ownership/Ownable.sol`, 'utf8'),
-    'GC0.sol': fs.readFileSync(`${__dirname}/GC0.sol`, 'utf8'),
+    'OathForge.sol': fs.readFileSync(`${__dirname}/OathForge.sol`, 'utf8'),
   }
 }, 1)

@@ -1,11 +1,11 @@
-let gc0
+let oathForge
 
-module.exports = function getgc0Info() {
-  if (gc0) {
-    return gc0
+module.exports = function getoathForgeInfo() {
+  if (oathForge) {
+    return oathForge
   }
   console.log('Compiling gcNFT0...'.cyan)
-  gc0  = require('../../')
+  oathForge  = require('../../')
   console.log('Compiling gcNFT0 complete'.green)
-  return gc0
+  return oathForge
 }
