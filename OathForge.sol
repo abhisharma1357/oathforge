@@ -18,57 +18,101 @@ contract OathForge is ERC721, ERC721Metadata, Ownable {
   mapping(uint256 => uint256) private _redemptionCodeHashSubmittedAt;
   mapping(uint256 => bytes32) private _redemptionCodeHash;
 
-  constructor(string _name, string _symbol) ERC721Metadata(_name, _symbol) public {}
+  /// @param name The ERC721 Metadata name
+  /// @param symbol The ERC721 Metadata symbol
+  constructor(string name, string symbol) ERC721Metadata(name, symbol) public {}
 
-  modifier notSunsetFinished(uint256 _tokenId) {
-    if (sunsetInitiatedAt[_tokenId] > 0) {
-      require(now <= sunsetInitiatedAt[_tokenId].add(sunsetLength[_tokenId]));
-    }
-    _;
+  /// @dev Emits when a sunset has been initiated
+  /// @param tokenId The token id
+  event SunsetInitiated(uint256 indexed tokenId);
+
+  /// @dev Emits when a redemption code hash has been submitted
+  /// @param tokenId The token id
+  /// @param redemptionCodeHash The redemption code hash
+  event RedemptionCodeHashSubmitted(uint256 indexed tokenId, bytes32 redemptionCodeHash);
+
+  /// @dev Returns the total number of tokens (minted - burned) registered
+  function totalSupply() external view returns(uint256){
+    return _totalSupply;
   }
 
+  /// @dev Returns the token id of the next minted token
+  function nextTokenId() external view returns(uint256){
+    return _nextTokenId;
+  }
+
+  /// @dev Returns the timestamp at which a token's sunset was initated. Returns 0 if no sunset has been initated.
+  /// @param tokenId The token id
+  function sunsetInitiatedAt(uint256 tokenId) external view returns(uint256){
+    return _sunsetInitiatedAt[tokenId];
+  }
+
+  /// @dev Returns the sunset length of a token
+  /// @param tokenId The token id
+  function sunsetLength(uint256 tokenId) external view returns(uint256){
+    return _sunsetLength[tokenId];
+  }
+
+  /// @dev Returns the redemption code hash submitted for a token
+  /// @param tokenId The token id
+  function redemptionCodeHash(uint256 tokenId) external view returns(bytes32){
+    return _redemptionCodeHash[tokenId];
+  }
+
+  /// @dev Returns the timestamp at which a redemption code hash was submitted
+  /// @param tokenId The token id
+  function redemptionCodeHashSubmittedAt(uint256 tokenId) external view returns(uint256){
+    return _redemptionCodeHashSubmittedAt[tokenId];
+  }
+
+
   /// @dev Mint a token. Only `owner` may call this function.
-  /// @param _to The receiver of the token
-  /// @param _tokenURI The tokenURI of the the tokenURI
-  /// @param _sunsetLength The length (in seconds) that a sunset period can last
-  function mint(address _to, string _tokenURI, uint256 _sunsetLength) public onlyOwner {
-    sunsetLength[nextTokenId] = _sunsetLength;
-    _mint(_to, nextTokenId);
-    _setTokenURI(nextTokenId, _tokenURI);
-    nextTokenId = nextTokenId.add(1);
-    totalSupply = totalSupply.add(1);
+  /// @param to The receiver of the token
+  /// @param tokenURI The tokenURI of the the tokenURI
+  /// @param __sunsetLength The length (in seconds) that a sunset period can last
+  function mint(address to, string tokenURI, uint256 __sunsetLength) public onlyOwner {
+    _mint(to, _nextTokenId);
+    _sunsetLength[_nextTokenId] = __sunsetLength;
+    _setTokenURI(_nextTokenId, tokenURI);
+    _nextTokenId = _nextTokenId.add(1);
+    _totalSupply = _totalSupply.add(1);
   }
 
   /// @dev Initiate a sunset. Sets `sunsetInitiatedAt` to current timestamp. Only `owner` may call this function.
-  /// @param _tokenId The id of the token
-  function initiateSunset(uint256 _tokenId) public onlyOwner {
-    require(sunsetInitiatedAt[_tokenId] == 0);
-    sunsetInitiatedAt[_tokenId] = now;
+  /// @param tokenId The id of the token
+  function initiateSunset(uint256 tokenId) external onlyOwner {
+    require(_sunsetInitiatedAt[tokenId] == 0);
+    _sunsetInitiatedAt[tokenId] = now;
+    emit SunsetInitiated(tokenId);
   }
 
   /// @dev Submit a redemption code hash for a specific token. Burns the token. Sets `redemptionCodeHashSubmittedAt` to current timestamp. Decreases `totalSupply` by 1.
-  /// @param _tokenId The id of the token
-  /// @param _redemptionCodeHash The redemption code hash
-  function submitRedemptionCodeHash(uint256 _tokenId, bytes32 _redemptionCodeHash) public {
-    _burn(msg.sender, _tokenId);
-    redemptionCodeHashSubmittedAt[_tokenId] = now;
-    redemptionCodeHash[_tokenId] = _redemptionCodeHash;
-    totalSupply = totalSupply.sub(1);
+  /// @param tokenId The id of the token
+  /// @param __redemptionCodeHash The redemption code hash
+  function submitRedemptionCodeHash(uint256 tokenId, bytes32 __redemptionCodeHash) external {
+    _burn(msg.sender, tokenId);
+    _redemptionCodeHashSubmittedAt[tokenId] = now;
+    _redemptionCodeHash[tokenId] = __redemptionCodeHash;
+    _totalSupply = _totalSupply.sub(1);
+    emit RedemptionCodeHashSubmitted(tokenId, __redemptionCodeHash);
   }
 
   /// @dev Transfers the ownership of a given token ID to another address. Usage of this method is discouraged, use `safeTransferFrom` whenever possible. Requires the msg sender to be the owner, approved, or operator
-  /// @param _from current owner of the token
-  /// @param _to address to receive the ownership of the given token ID
-  /// @param _tokenId uint256 ID of the token to be transferred
-  function transferFrom(address _from, address _to, uint256 _tokenId) public notSunsetFinished(_tokenId) {
-    super.transferFrom(_from, _to, _tokenId);
+  /// @param from current owner of the token
+  /// @param to address to receive the ownership of the given token ID
+  /// @param tokenId uint256 ID of the token to be transferred
+  function transferFrom(address from, address to, uint256 tokenId) public {
+    if (_sunsetInitiatedAt[tokenId] > 0) {
+      require(now <= _sunsetInitiatedAt[tokenId].add(_sunsetLength[tokenId]));
+    }
+    super.transferFrom(from, to, tokenId);
   }
 
   /// @dev Set `tokenUri`. Only `owner` may do this.
-  /// @param _tokenId The id of the token
-  /// @param _tokenURI The token URI
-  function setTokenURI(uint256 _tokenId, string _tokenURI) public onlyOwner {
-    _setTokenURI(_tokenId, _tokenURI);
+  /// @param tokenId The id of the token
+  /// @param tokenURI The token URI
+  function setTokenURI(uint256 tokenId, string tokenURI) external onlyOwner {
+    _setTokenURI(tokenId, tokenURI);
   }
 
 }

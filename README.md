@@ -7,8 +7,8 @@ Author: GuildCrypt
 | [`Approval(address,address,uint256)`](#Approval(address,address,uint256)) | event |
 | [`ApprovalForAll(address,address,bool)`](#ApprovalForAll(address,address,bool)) | event |
 | [`approve(address,uint256)`](#approve(address,uint256)) | function (non-constant) |
-| [`constructor(string,string)`](#constructor(string,string)) | constructor |
 | [`balanceOf(address)`](#balanceOf(address)) | function (constant) |
+| [`constructor(string,string)`](#constructor(string,string)) | constructor |
 | [`getApproved(uint256)`](#getApproved(uint256)) | function (constant) |
 | [`initiateSunset(uint256)`](#initiateSunset(uint256)) | function (non-constant) |
 | [`isApprovedForAll(address,address)`](#isApprovedForAll(address,address)) | function (constant) |
@@ -20,6 +20,7 @@ Author: GuildCrypt
 | [`ownerOf(uint256)`](#ownerOf(uint256)) | function (constant) |
 | [`OwnershipTransferred(address,address)`](#OwnershipTransferred(address,address)) | event |
 | [`redemptionCodeHash(uint256)`](#redemptionCodeHash(uint256)) | function (constant) |
+| [`RedemptionCodeHashSubmitted(uint256,bytes32)`](#RedemptionCodeHashSubmitted(uint256,bytes32)) | event |
 | [`redemptionCodeHashSubmittedAt(uint256)`](#redemptionCodeHashSubmittedAt(uint256)) | function (constant) |
 | [`renounceOwnership()`](#renounceOwnership()) | function (non-constant) |
 | [`safeTransferFrom(address,address,uint256,bytes)`](#safeTransferFrom(address,address,uint256,bytes)) | function (non-constant) |
@@ -27,6 +28,7 @@ Author: GuildCrypt
 | [`setApprovalForAll(address,bool)`](#setApprovalForAll(address,bool)) | function (non-constant) |
 | [`setTokenURI(uint256,string)`](#setTokenURI(uint256,string)) | function (non-constant) |
 | [`submitRedemptionCodeHash(uint256,bytes32)`](#submitRedemptionCodeHash(uint256,bytes32)) | function (non-constant) |
+| [`SunsetInitiated(uint256)`](#SunsetInitiated(uint256)) | event |
 | [`sunsetInitiatedAt(uint256)`](#sunsetInitiatedAt(uint256)) | function (constant) |
 | [`sunsetLength(uint256)`](#sunsetLength(uint256)) | function (constant) |
 | [`supportsInterface(bytes4)`](#supportsInterface(bytes4)) | function (constant) |
@@ -59,13 +61,6 @@ Author: GuildCrypt
 | `0` | `address` | `to` | address to be approved for the given token ID |
 | `1` | `uint256` | `tokenId` | uint256 ID of the token to be approved |
 ---
-#### <a name="constructor(string,string)"></a> `constructor(string,string)`
-##### Inputs
-|  | Type | Name | Description |
-|---|---|---|---|
-| `0` | `string` | `_name` |  |
-| `1` | `string` | `_symbol` |  |
----
 #### <a name="balanceOf(address)"></a> `balanceOf(address)`
 ##### Inputs
 |  | Type | Name | Description |
@@ -75,6 +70,13 @@ Author: GuildCrypt
 |  | Type | Name | Description |
 |---|---|---|---|
 | `0` | `uint256` |  |  |
+---
+#### <a name="constructor(string,string)"></a> `constructor(string,string)`
+##### Inputs
+|  | Type | Name | Description |
+|---|---|---|---|
+| `0` | `string` | `name` |  |
+| `1` | `string` | `symbol` |  |
 ---
 #### <a name="getApproved(uint256)"></a> `getApproved(uint256)`
 ##### Inputs
@@ -90,7 +92,7 @@ Author: GuildCrypt
 ##### Inputs
 |  | Type | Name | Description |
 |---|---|---|---|
-| `0` | `uint256` | `_tokenId` | The id of the token |
+| `0` | `uint256` | `tokenId` | The id of the token |
 ---
 #### <a name="isApprovedForAll(address,address)"></a> `isApprovedForAll(address,address)`
 ##### Inputs
@@ -113,9 +115,9 @@ Author: GuildCrypt
 ##### Inputs
 |  | Type | Name | Description |
 |---|---|---|---|
-| `0` | `address` | `_to` | The receiver of the token |
-| `1` | `string` | `_tokenURI` | The tokenURI of the the tokenURI |
-| `2` | `uint256` | `_sunsetLength` | The length (in seconds) that a sunset period can last |
+| `0` | `address` | `to` | The receiver of the token |
+| `1` | `string` | `tokenURI` | The tokenURI of the the tokenURI |
+| `2` | `uint256` | `__sunsetLength` | The length (in seconds) that a sunset period can last |
 ---
 #### <a name="name()"></a> `name()`
 ##### Outputs
@@ -156,17 +158,24 @@ Author: GuildCrypt
 ##### Inputs
 |  | Type | Name | Description |
 |---|---|---|---|
-| `0` | `uint256` |  |  |
+| `0` | `uint256` | `tokenId` | The token id |
 ##### Outputs
 |  | Type | Name | Description |
 |---|---|---|---|
 | `0` | `bytes32` |  |  |
 ---
+#### <a name="RedemptionCodeHashSubmitted(uint256,bytes32)"></a> `RedemptionCodeHashSubmitted(uint256,bytes32)`
+##### Inputs
+|  | Type | Name | Description | Indexed? |
+|---|---|---|---|---|
+| `0` | `uint256` | `tokenId` |  | `true` |
+| `1` | `bytes32` | `redemptionCodeHash` |  | `false` |
+---
 #### <a name="redemptionCodeHashSubmittedAt(uint256)"></a> `redemptionCodeHashSubmittedAt(uint256)`
 ##### Inputs
 |  | Type | Name | Description |
 |---|---|---|---|
-| `0` | `uint256` |  |  |
+| `0` | `uint256` | `tokenId` | The token id |
 ##### Outputs
 |  | Type | Name | Description |
 |---|---|---|---|
@@ -202,21 +211,27 @@ Author: GuildCrypt
 ##### Inputs
 |  | Type | Name | Description |
 |---|---|---|---|
-| `0` | `uint256` | `_tokenId` | The id of the token |
-| `1` | `string` | `_tokenURI` | The token URI |
+| `0` | `uint256` | `tokenId` | The id of the token |
+| `1` | `string` | `tokenURI` | The token URI |
 ---
 #### <a name="submitRedemptionCodeHash(uint256,bytes32)"></a> `submitRedemptionCodeHash(uint256,bytes32)`
 ##### Inputs
 |  | Type | Name | Description |
 |---|---|---|---|
-| `0` | `uint256` | `_tokenId` | The id of the token |
-| `1` | `bytes32` | `_redemptionCodeHash` | The redemption code hash |
+| `0` | `uint256` | `tokenId` | The id of the token |
+| `1` | `bytes32` | `__redemptionCodeHash` | The redemption code hash |
+---
+#### <a name="SunsetInitiated(uint256)"></a> `SunsetInitiated(uint256)`
+##### Inputs
+|  | Type | Name | Description | Indexed? |
+|---|---|---|---|---|
+| `0` | `uint256` | `tokenId` |  | `true` |
 ---
 #### <a name="sunsetInitiatedAt(uint256)"></a> `sunsetInitiatedAt(uint256)`
 ##### Inputs
 |  | Type | Name | Description |
 |---|---|---|---|
-| `0` | `uint256` |  |  |
+| `0` | `uint256` | `tokenId` | The token id |
 ##### Outputs
 |  | Type | Name | Description |
 |---|---|---|---|
@@ -226,7 +241,7 @@ Author: GuildCrypt
 ##### Inputs
 |  | Type | Name | Description |
 |---|---|---|---|
-| `0` | `uint256` |  |  |
+| `0` | `uint256` | `tokenId` | The token id |
 ##### Outputs
 |  | Type | Name | Description |
 |---|---|---|---|
@@ -276,9 +291,9 @@ Author: GuildCrypt
 ##### Inputs
 |  | Type | Name | Description |
 |---|---|---|---|
-| `0` | `address` | `_from` | current owner of the token |
-| `1` | `address` | `_to` | address to receive the ownership of the given token ID |
-| `2` | `uint256` | `_tokenId` | uint256 ID of the token to be transferred |
+| `0` | `address` | `from` | current owner of the token |
+| `1` | `address` | `to` | address to receive the ownership of the given token ID |
+| `2` | `uint256` | `tokenId` | uint256 ID of the token to be transferred |
 ---
 #### <a name="transferOwnership(address)"></a> `transferOwnership(address)`
 ##### Inputs
