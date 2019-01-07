@@ -5,7 +5,7 @@ import "ERC721Metadata.sol";
 import "math/SafeMath.sol";
 import "ownership/Ownable.sol";
 
-/// @title NFT Token Registry
+/// @title OathForge: NFT Registry
 /// @author GuildCrypt
 contract OathForge is ERC721, ERC721Metadata, Ownable {
 

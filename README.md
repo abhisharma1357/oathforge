@@ -1,4 +1,4 @@
-# NFT Token Registry
+# OathForge: NFT Registry
 Author: GuildCrypt
 
 
