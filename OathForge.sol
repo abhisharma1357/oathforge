@@ -81,6 +81,7 @@ contract OathForge is ERC721, ERC721Metadata, Ownable {
   /// @dev Initiate a sunset. Sets `sunsetInitiatedAt` to current timestamp. Only `owner` may call this function.
   /// @param tokenId The id of the token
   function initiateSunset(uint256 tokenId) external onlyOwner {
+    require(tokenId < _nextTokenId);
     require(_sunsetInitiatedAt[tokenId] == 0);
     _sunsetInitiatedAt[tokenId] = now;
     emit SunsetInitiated(tokenId);

@@ -1,5 +1,5 @@
 const ultralightbeam = require('./ultralightbeam')
-const oathForgeInfo = require('../')
+const oathForgeInfo = require('../../')
 const Amorph = require('amorph')
 const amorphNumber = require('amorph-number')
 const accounts = require('./accounts')
