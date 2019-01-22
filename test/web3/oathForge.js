@@ -230,31 +230,4 @@ describe('OathForge Contract', async (accounts) => {
     assert.equal(totalSupply.toNumber(),2);
 
   });
-
-  it('Should correctly initialize constructor values of Dai Token Contract', async () => {
-
-    this.daihold = await DaiToken.new(addresses[0],{ gas: 60000000 });
-    let owner = await this.daihold.owner.call();
-    assert.equal(owner, addresses[0]);
-
-  });
-
-  it('Should issue Dai token to addresses[0],[1],[2],[3]', async () => {
-
-    let DAI = await this.daihold.releaseTokens(addresses[0],1);
-    let DAI1 = await this.daihold.releaseTokens(addresses[1],2);
-    let DAI2 = await this.daihold.releaseTokens(addresses[2],3);
-    let DAI3 = await this.daihold.releaseTokens(addresses[3],4);
-    let balance1 = await this.daihold.balanceOf(addresses[0]);
-    let balance2 = await this.daihold.balanceOf(addresses[1]);
-    let balance3 = await this.daihold.balanceOf(addresses[2]);
-    let balance4 = await this.daihold.balanceOf(addresses[3]);
-    //console.log(DAI4.toNumber()/10**18);
-    assert.equal(balance1.toNumber()/10**18,1);
-    assert.equal(balance2.toNumber()/10**18,2);
-    assert.equal(balance3.toNumber()/10**18,3);
-    assert.equal(balance4.toNumber()/10**18,4);
-
-  });
-
 })
